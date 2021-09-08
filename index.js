@@ -48,13 +48,38 @@ const player = {
     { id: 5, name: 'Israeli', songs: [4, 5] },
   ],
   playSong(song) {
-    console.log(/* your code here */)
+    console.log(`Playing ${song.title} from ${song.album} by ${song.artist} | ${secToMmssFormat(song.duration)}.`);
   },
 }
 
-function playSong(id) {
-  // your code here
+function secToMmssFormat(sec){ // recieve the duration in sec and return it in mm:ss format ;
+  let mm ;
+  let ss = sec ;
+  let output =0;
+  mm =  Math.floor(sec/60) ;
+  ss -= mm*60
+  if (ss<10){
+    ss = "0" + ss ;
+  }
+  if (ss>=60){
+    mm++ ;
+    sec -=60 ; }
+  if (sec>=600) {
+    output =  mm + ":" + ss ; }
+ else {
+   output +=  mm + ":" + ss ;}
+return  output ;
 }
+
+function playSong(id) {
+  for(let song of player.songs){
+    if(song.id === id){
+      return player.playSong(song);
+    }
+  }
+  throw new Error("No such ID");
+}
+console.log(playSong(2));
 
 function removeSong(id) {
   // your code here
