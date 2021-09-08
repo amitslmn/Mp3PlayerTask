@@ -81,9 +81,34 @@ function playSong(id) {
 }
 console.log(playSong(2));
 
-function removeSong(id) {
-  // your code here
+function removeSongPlayer(id){  // function recieve song id and remove the song from player ;
+  for(let song in player.songs) {
+    if(player.songs[song].id === id) {
+      player.songs.splice(song,1);
+      return true;
+    }
+    
+  }
+  return false;
+  
 }
+function removeSongPlaylist(id){ // function remove song from playlist ;
+  for(let playlist of player.playlists) {
+    for (let i in playlist.songs) {
+      if(playlist.songs[i] === id) playlist.songs.splice(i, 1);
+    }
+  }
+}
+
+function removeSong(id) { // check if id is valid, if not throw an error ;
+  if (removeSongPlayer(id)==false){
+    throw new Error("id not exist !")
+  }
+(removeSongPlaylist(id));
+} 
+
+console.log(player.playlists);
+console.log(removeSong(4)) ;
 
 function addSong(title, album, artist, duration, id) {
   // your code here
