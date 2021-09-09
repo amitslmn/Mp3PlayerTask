@@ -110,7 +110,7 @@ function removeSong(id) { // check if id is valid, if not throw an error ;
 console.log(player.playlists);
 console.log(removeSong(4)) ;
 
-function maxID(id =0){ // function check the max id in player ;
+function songMaxId(id =0){ // function check the max id in player ;
   for (let i in player.songs) {
     if (player.songs[i].id >id ) {
       id = player.songs[i].id ;
@@ -138,7 +138,7 @@ function playlistIdExists(id){ // function check if given id is exists in player
 
 function addSong(title, album, artist, duration, id) { // function add song to player with the given args ;
   if (id === undefined) {                          // id is optional. if not given its generate random id(max id +1)
-    id = maxID() +1 ;}
+    id = songMaxId() +1 ;}
     if (songIdExists(id)==true){
       throw 'id already exists ! '
     }
@@ -162,15 +162,31 @@ function removePlaylist(id) {  // function remove playlist by given id and throw
     }
   }
 
-console.log(removePlaylist(1));
+// console.log(removePlaylist(1));
 console.log(player.playlists);
 console.log(player.songs);
 
-
-
-function createPlaylist(name, id) {
-  // your code here
+function playlistMaxId(id=0){ // find the max id in player playlists ;
+  for (let i in player.playlists) {
+    if (player.playlists[i].id >id ) {
+      id = player.playlists[i].id ;
+    }
+  }
+  return id ;
 }
+
+function createPlaylist(name, id) { // create new empty playlist ;
+  if (id === undefined) {                          
+    id = playlistMaxId() +1 ;}
+    if (playlistIdExists(id)==true){
+      throw 'id already exists ! '
+    }
+  player.playlists.push({id, name, songs :[]});
+  console.log( player)
+  return id ;
+}
+console.log(playlistMaxId() + " iddddd")
+console.log(createPlaylist('linkin park'))
 
 function playPlaylist(id) {
   // your code here
