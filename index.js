@@ -118,7 +118,7 @@ function maxID(id =0){ // function check the max id in player ;
   }
   return id ;
 }
-function idExists(id){ // function check if given id is exists in player ;
+function songIdExists(id){ // function check if given id is exists in player songs ;
   for (let i in player.songs) {
     if (player.songs[i].id === id ) {
       return true ;
@@ -127,10 +127,19 @@ function idExists(id){ // function check if given id is exists in player ;
   }
 }
 
-function addSong(title, album, artist, duration, id) {
-  if (id === undefined) {
+function playlistIdExists(id){ // function check if given id is exists in player playlists ;
+  for (let i in player.playlists) {
+    if (player.playlists[i].id === id ) {
+      return true ;
+    }
+    return false ;
+  }
+}
+
+function addSong(title, album, artist, duration, id) { // function add song to player with the given args ;
+  if (id === undefined) {                          // id is optional. if not given its generate random id(max id +1)
     id = maxID() +1 ;}
-    if (idExists(id)==true){
+    if (songIdExists(id)==true){
       throw 'id already exists ! '
     }
   duration = secToMmssFormat(duration);
@@ -142,9 +151,22 @@ function addSong(title, album, artist, duration, id) {
 }
 console.log(addSong('white','black','eyalGolan',333));
 
-function removePlaylist(id) {
-//
-}
+function removePlaylist(id) {  // function remove playlist by given id and throw error if id not exist ;
+  if (playlistIdExists(id) ===false){
+    throw 'playlist id not exist ! '
+  }
+  for(let i in player.playlists) {
+      if(player.playlists[i].id === id) {
+        player.playlists.splice(i, 1);
+      } 
+    }
+  }
+
+console.log(removePlaylist(1));
+console.log(player.playlists);
+console.log(player.songs);
+
+
 
 function createPlaylist(name, id) {
   // your code here
