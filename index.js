@@ -45,7 +45,7 @@ const player = {
   ],
   playlists: [
     { id: 1, name: 'Metal', songs: [1,7,4] },
-    { id: 5, name: 'Israeli', songs: [5] },
+    { id: 5, name: 'Israeli', songs: [4,5] },
   ],
   playSong(song) {
     console.log(`Playing ${song.title} from ${song.album} by ${song.artist} | ${secToMmssFormat(song.duration)}.`);
@@ -168,9 +168,7 @@ function removePlaylist(id) {  // function remove playlist by given id and throw
 function playlistMaxId(id=0){ // find the max id in player playlists ;
   for (let i in player.playlists) {
     if (player.playlists[i].id >id ) {
-      id = player.playlists[i].id ;
-    }
-  }
+      id = player.playlists[i].id ; }}
   return id ;
 }
 
@@ -178,8 +176,7 @@ function createPlaylist(name, id) { // create new empty playlist ;
   if (id === undefined) {                          
     id = playlistMaxId() +1 ;}
     if (playlistIdExists(id)==true){
-      throw 'id already exists ! '
-    }
+      throw 'id already exists ! ' }
   player.playlists.push({id, name, songs :[]});
   return id ;
 }
@@ -201,6 +198,14 @@ function playPlaylist(id) {
 function playlistIdIndex(id){ // function return index of given palylist id ;
   for (let i in player.playlists) {
     if (player.playlists[i].id === id ) {
+      return i ;
+    }
+  }
+}
+
+function songIdIndex(id){ // function return index of given song id ;
+  for (let i in player.songs) {
+    if (player.songs[i].id === id ) {
       return i ;
     }
   }
@@ -228,19 +233,21 @@ function playlistIdIndex(id){ // function return index of given palylist id ;
 
 function editPlaylist(playlistId, songId) {
   if (songIdExists(songId)==false){
-    throw 'song id not exist !'
-  }
+    throw 'song id not exist !' }
   if (songIdInPlaylist(playlistId,songId)===false){
     player.playlists[playlistIdIndex(playlistId)].songs.push(songId);
-    return player.playlists ;
-  }
+    return player.playlists ; }
   return false ;
 }
 
 
 
-function playlistDuration(id) {
-  // your code here
+function playlistDuration(id) { // function gets playlist id and return plalist duration ;
+  let duration = 0 ;
+  let index = playlistIdIndex(id) ;
+  for (let i =0; i<player.playlists[index].songs.length;i++){
+    duration += player.songs[songIdIndex(player.playlists[index].songs[i])].duration;  }
+  return duration ;
 }
 
 function searchByQuery(query) {
