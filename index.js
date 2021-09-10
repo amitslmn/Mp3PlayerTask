@@ -45,7 +45,7 @@ const player = {
   ],
   playlists: [
     { id: 1, name: 'Metal', songs: [1,7,4] },
-    { id: 5, name: 'Israeli', songs: [4, 5] },
+    { id: 5, name: 'Israeli', songs: [5] },
   ],
   playSong(song) {
     console.log(`Playing ${song.title} from ${song.album} by ${song.artist} | ${secToMmssFormat(song.duration)}.`);
@@ -79,7 +79,7 @@ function playSong(id) {
   }
   throw new Error("No such ID");
 }
-playSong(4)
+
 
 
 function removeSongPlayer(id){  // function recieve song id and remove the song from player ;
@@ -108,7 +108,6 @@ function removeSong(id) { // check if id is valid, if not throw an error ;
 (removeSongPlaylist(id));
 } 
 
-console.log(player.playlists);
 
 function songMaxId(id =0){ // function check the max id in player ;
   for (let i in player.songs) {
@@ -119,21 +118,22 @@ function songMaxId(id =0){ // function check the max id in player ;
   return id ;
 }
 function songIdExists(id){ // function check if given id is exists in player songs ;
-  for (let i in player.songs) {
+  for (let i =0; i<player.songs.length; i++) {
     if (player.songs[i].id === id ) {
       return true ;
     }
-    return false ;
   }
+  return false ;
 }
+
 
 function playlistIdExists(id){ // function check if given id is exists in player playlists ;
   for (let i in player.playlists) {
     if (player.playlists[i].id === id ) {
       return true ;
     }
-    return false ;
   }
+  return false ;
 }
 
 function addSong(title, album, artist, duration, id) { // function add song to player with the given args ;
@@ -186,8 +186,7 @@ function createPlaylist(name, id) { // create new empty playlist ;
 
 function playPlaylist(id) {
   if (playlistIdExists(id)==false){
-      throw " id not exist !"
-  }
+      throw " id not exist !"}
   let songID ;
   for(let i =0; i<player.playlists.length; i++){
     if (player.playlists[i].id===id){
@@ -196,16 +195,49 @@ function playPlaylist(id) {
       playSong(songID) ;
     }
   }
-
   }
   }
+  
+function playlistIdIndex(id){ // function return index of given palylist id ;
+  for (let i in player.playlists) {
+    if (player.playlists[i].id === id ) {
+      return i ;
+    }
+  }
+}
 
-
-(playPlaylist(1));
+  function songIdInPlaylist(playlistId,songId){ // function check if given song id inside given playlist, remove  
+    if(playlistIdExists(playlistId)===true){    // it if exists in playlist, and if playlist empty remove playlist;
+      let playlistIndex = playlistIdIndex(playlistId) ;
+      for (let i =0; i<player.playlists[playlistIndex].songs.length; i++) {
+        if (player.playlists[playlistIndex].songs[i] === songId ) {
+          player.playlists[playlistIdIndex(playlistId)].songs.splice(i,1) ;
+          let len = player.playlists[playlistIdIndex(playlistId)].songs.length ;
+          if (len ==0) {
+            player.playlists.splice([playlistIdIndex(playlistId)],1) ;
+          }
+          return true ; 
+        }
+      }  
+      return false ;
+      }
+    else{
+        throw 'false playlist id' ;
+      }
+  }
 
 function editPlaylist(playlistId, songId) {
-  // your code here
+  if (songIdExists(songId)==false){
+    throw 'song id not exist !'
+  }
+  if (songIdInPlaylist(playlistId,songId)===false){
+    player.playlists[playlistIdIndex(playlistId)].songs.push(songId);
+    return player.playlists ;
+  }
+  return false ;
 }
+
+
 
 function playlistDuration(id) {
   // your code here
