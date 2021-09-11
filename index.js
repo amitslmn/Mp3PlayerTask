@@ -42,10 +42,19 @@ const player = {
       artist: 'Full Trunk',
       duration: 259,
     },
+    {
+      id: 55,
+      title: 'As a Stone',
+      album: 'Show Us WhGFGDGFDGat Y3423423423ou Got',
+      artist: 'Full Trunk',
+      duration: 259,
+    },
+
   ],
   playlists: [
     { id: 1, name: 'Metal', songs: [1,7,4] },
-    { id: 5, name: 'Israeli', songs: [4,5] },
+    { id: 5, name: 'Israeli', songs: [4,5] }, 
+    { id: 9, name: 'Metal', songs: [4,5,1,1,1] }, 
   ],
   playSong(song) {
     console.log(`Playing ${song.title} from ${song.album} by ${song.artist} | ${secToMmssFormat(song.duration)}.`);
@@ -251,12 +260,69 @@ function playlistDuration(id) { // function gets playlist id and return plalist 
 }
 
 function searchByQuery(query) {
-  // your code here
+  let objValueArr = [];
+  for (let i =0; i<player.songs.length; i++) {  // make the sort by title, case sensetive 
+    let objValue = Object.values(player.songs[i])
+    for (let j=0 ; j< objValue.length; j++ ){
+      if (objValue[j] == query) {
+        objValueArr.push(objValue) ;
+    }
+  }
+}
+let playlistArr = [];
+for (let i =0; i<player.playlists.length; i++) { // make the sort by name, case sensetive 
+  let nameCheck = player.playlists[i].name;
+  if (nameCheck == query) {
+     playlistArr.push(player.playlists[i]) ;
+  }
+}
+  if (objValueArr.length===0 && playlistArr.length===0){
+    throw 'query not found  !'
+  } 
+  return  objValueArr ,  playlistArr;
 }
 
-function searchByDuration(duration) {
-  // your code here
+function serachPlaylistDuration(duration){ // function return the nearest given duration in playlist ;
+let difference1 = 0 ;
+let difference2 = 0 ;
+let playlistIndex =0 ;
+difference1 = Math.abs(playlistDuration(player.playlists[0].id)-duration) ;
+for (let i=1; i<player.playlists.length ; i++){
+  difference2 = Math.abs(duration - playlistDuration(player.playlists[i].id)) ;
+  if(difference2 <difference1){
+    playlistIndex = i ;
+  }
 }
+return  player.playlists[playlistIndex];
+}
+
+function searchByDuration(duration) { // search the nearest given duration in songs and compare with    
+  let playlistOutput = serachPlaylistDuration(duration) ; // serachPlaylistDuration() and return the closest one ;
+  let newDuration = mmssTosec(duration);
+  let songOutput  ;
+  let difference1 = 0 ;
+  let difference2 = 0 ;
+  let songIndex =0 ;
+  difference1 = Math.abs(player.songs[0].duration-newDuration) ;
+  for (let i=1; i<player.songs.length ; i++){
+    difference2 = Math.abs(newDuration - player.songs[i].duration) ;
+    if(difference2 <difference1){
+      songIndex = i ;
+    }
+  }
+  songOutput = player.songs[songIndex] ;
+  difference1 = newDuration - player.songs[songIndex].duration;
+  difference1 = Math.abs(difference1);
+  difference2 = newDuration - playlistDuration(playlistOutput.id);
+  difference2 = Math.abs(difference2)
+  if ( difference1< difference2){
+    return songOutput ;
+  }
+  else {
+    return playlistOutput ;
+  }
+}
+    
 
 module.exports = {
   player,
