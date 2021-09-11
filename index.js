@@ -54,7 +54,7 @@ const player = {
   playlists: [
     { id: 1, name: 'Metal', songs: [1,7,4] },
     { id: 5, name: 'Israeli', songs: [4,5] }, 
-    { id: 9, name: 'Metal', songs: [4,5,1,1,1] }, 
+    { id: 9, name: 'Metalica', songs: [4,5,1,1,1] }, 
   ],
   playSong(song) {
     console.log(`Playing ${song.title} from ${song.album} by ${song.artist} | ${secToMmssFormat(song.duration)}.`);
@@ -258,29 +258,47 @@ function playlistDuration(id) { // function gets playlist id and return plalist 
     duration += player.songs[songIdIndex(player.playlists[index].songs[i])].duration;  }
   return duration ;
 }
-
-function searchByQuery(query) {
+function searchByQueryInSongs(query){ // Search By Given Query In Songs
   let objValueArr = [];
-  for (let i =0; i<player.songs.length; i++) {  // make the sort by title, case sensetive 
+  let songCmp ;
+  query = query.toLowerCase() ; 
+  for (let i =0; i<player.songs.length; i++) {             
     let objValue = Object.values(player.songs[i])
     for (let j=0 ; j< objValue.length; j++ ){
-      if (objValue[j] == query) {
-        objValueArr.push(objValue) ;
+      songCmp = objValue[j] ;
+      songCmp = String(songCmp).toLowerCase() ;
+      if (songCmp.includes(query)) {
+        objValueArr.push(player.songs[i]) ;
+        break ;
+      }
     }
   }
+  objValueArr.sort((a, b) => (a.title > b.title) ? 1 : -1)
+ return objValueArr ;
 }
-let playlistArr = [];
-for (let i =0; i<player.playlists.length; i++) { // make the sort by name, case sensetive 
-  let nameCheck = player.playlists[i].name;
-  if (nameCheck == query) {
-     playlistArr.push(player.playlists[i]) ;
+
+
+function searchByQuery(query) {  // receive a query and return the song or playlist  which contain 
+  query = String(query.toLowerCase()) ;   // the given query ;
+  let songArr = searchByQueryInSongs(query) ; 
+  let playlistArr = [];
+  for (let i =0; i<player.playlists.length; i++) {       
+    let nameCheck = player.playlists[i].name;
+    nameCheck = String(nameCheck.toLowerCase())
+    if (nameCheck.includes(query)) {
+      playlistArr.push(player.playlists[i]) ;
+    }
   }
+  if (songArr.length===0 && playlistArr.length===0){
+      throw 'query not found  !'
+    } 
+    playlistArr.sort((a, b) => (a.name > b.name) ? 1 : -1)
+
+  let output = {'songs' : songArr,
+                'playlists' : playlistArr}
+  return  output;
 }
-  if (objValueArr.length===0 && playlistArr.length===0){
-    throw 'query not found  !'
-  } 
-  return  objValueArr ,  playlistArr;
-}
+
 
 function serachPlaylistDuration(duration){ // function return the nearest given duration in playlist ;
 let difference1 = 0 ;
