@@ -340,7 +340,6 @@ function searchByDuration(duration) { // search the nearest given duration in so
     return playlistOutput ;
   }
 }
-    
 
 module.exports = {
   player,
